@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 
-const String _currentWeatherUrl = 'api.weatherapi.com/v1/current.json?key=c7ffb83ec19b44c4bc1105324210712&q=';
+const String _currentWeatherUrl = 'http://api.weatherapi.com/v1/current.json?key=c7ffb83ec19b44c4bc1105324210712&q=';
 
 class WeatherGlobalView extends StatefulWidget {
   const WeatherGlobalView({Key? key}) : super(key: key);
@@ -22,7 +22,7 @@ class _WeatherGlobalViewState extends State<WeatherGlobalView> {
   Location location = Location();
 
   var weatherMap = <String, dynamic>{};
-  int currentTemp = 0;
+  double currentTemp = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class _WeatherGlobalViewState extends State<WeatherGlobalView> {
         title: const Text("Weather App"),
         actions: [
           IconButton(
-            onPressed: _refreshInfo(),
+            onPressed: () {_refreshInfo();},
             icon: const Icon(Icons.refresh),
           )
         ],
@@ -165,8 +165,6 @@ class _WeatherGlobalViewState extends State<WeatherGlobalView> {
     }
 
     await _getCoordinates();
-
-    setState(() {});
   }
 
   Future<void> _getCoordinates() async {
@@ -174,6 +172,9 @@ class _WeatherGlobalViewState extends State<WeatherGlobalView> {
   }
 
   Future<void> _fetchPrevisions() async {
+    if(_locationData == null) {
+      return;
+    }
     try {
       String query = _currentWeatherUrl + _locationData!.latitude.toString()
           + ',' + _locationData!.longitude.toString();
@@ -182,7 +183,7 @@ class _WeatherGlobalViewState extends State<WeatherGlobalView> {
       if (response.statusCode == HttpStatus.ok) {
         debugPrint(response.body);
         weatherMap = json.decode(response.body);
-        currentTemp = weatherMap['current']['temp_c'] as int;
+        currentTemp = weatherMap['current']['temp_c'];
       }
     } catch (ex) {
       debugPrint('Something went wrong: $ex');
