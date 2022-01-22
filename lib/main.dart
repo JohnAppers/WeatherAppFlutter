@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:weather_flutter/WeatherDayView.dart';
+
+import 'WeatherGlobalView.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +19,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: WeatherGlobalView.routeName,
       routes: {
-        AnimationScreen.routeName: (_) => const WeatherDayView(),
+        WeatherDayView.routeName: (_) => const WeatherDayView(),
         WeatherGlobalView.routeName: (_) => const WeatherGlobalView(),
       },
     );
